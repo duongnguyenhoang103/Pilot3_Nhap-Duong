@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: vn.com.hkt.em.core
+OpenIDE-Module-Layer: vn/com/hkt/em/core/layer.xml
+OpenIDE-Module-Localizing-Bundle: vn/com/hkt/em/core/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
