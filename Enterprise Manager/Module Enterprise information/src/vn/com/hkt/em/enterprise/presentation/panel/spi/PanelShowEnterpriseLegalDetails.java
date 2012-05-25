@@ -412,7 +412,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public long removeData() {
-       return removeData();
+       return 0;
     }
 
     @Override

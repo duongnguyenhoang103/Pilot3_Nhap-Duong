@@ -165,7 +165,7 @@ public class PanelShowEnterpriseBusinessAreaOverview extends javax.swing.JPanel 
 
     @Override
     public long removeData() {
-        return removeData();
+        return 0;
     }
 
     @Override

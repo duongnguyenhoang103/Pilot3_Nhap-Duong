@@ -55,7 +55,8 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
         initComponents();
         function = FUNCTION_CREATE;
         resetData();
-        setDefaultListener(); // thuc hien mo dialog
+        setDefaultListener(); // thuc hien su kien  mo dialog
+        // loadDefault();
     }
 
     private void loadCombobxEnterpriseParent() {//load dn cha
@@ -65,12 +66,21 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
     }
 
     private void loadComboboxCountry() {
-        cbCountry.setModel(new DefaultComboBoxModel(provider.getCountries().toArray()));
+        List<Country> listCountrys = provider.getCountries();
+        cbCountry.setModel(new DefaultComboBoxModel(listCountrys.toArray()));
+        //  cbCountry.setModel(new DefaultComboBoxModel(provider.getCountries().toArray()));
     }
 
     private void loadComboboxCity() {
-        Country c = (Country) cbCountry.getSelectedItem();
-        cbCity.setModel(new DefaultComboBoxModel(provider.getCities(c).toArray()));
+        if (cbCountry.getSelectedItem() != null) {
+            Country country = (Country) cbCountry.getSelectedItem();
+            List<City> listCitys = provider.getCities(country);
+            cbCity.setModel(new DefaultComboBoxModel(listCitys.toArray()));
+        } else {
+            cbCity.setModel(new DefaultComboBoxModel());
+        }
+//        Country c = (Country) cbCountry.getSelectedItem();
+//        cbCity.setModel(new DefaultComboBoxModel(provider.getCities(c).toArray()));
     }
 
     private class CTR_CLICK extends MouseAdapter {
@@ -83,14 +93,16 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() >= 2 && keyControlPress.isKeyCTRL()) {
-                if (comboBox.equals(cbCity)) {
-                    try {
+            if (e.getClickCount() >= 1 && keyControlPress.isKeyCTRL()) {
+                if (comboBox.equals(cbCity)) {// hien thi city theo country duoc chon
+                    try {// truyen BE = lay ra danh sach country dc chon
+                        Country country = (Country) cbCountry.getSelectedItem();
                         CityDialog cii = new CityDialog();
                         cii.setComboBox(comboBox);
                         cii.setVisible(true);
                     } catch (Exception ex) {
-                        //  JOptionPane.showConfirmDialog(null, ex);
+                        //   loadComboboxCity();
+                        JOptionPane.showConfirmDialog(null, ex);
                     }
                 } else if (comboBox.equals(cbCountry)) {
                     CountryDialog coi = new CountryDialog();
@@ -155,6 +167,12 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
         lbMessenger = new javax.swing.JLabel();
 
         jpanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), org.openide.util.NbBundle.getMessage(PanelShowEnterpriseBasic.class, "PanelShowEnterpriseBasic.jpanel5.border.title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
+
+        cbCountry.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbCountryItemStateChanged(evt);
+            }
+        });
 
         lbCity.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseBasic.class, "PanelShowEnterpriseBasic.lbCity.text")); // NOI18N
 
@@ -478,6 +496,10 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     }
 
 }//GEN-LAST:event_lbImageMouseClicked
+// khi select cbCoutry hien thi cbCity theo CbCOutry
+private void cbCountryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbCountryItemStateChanged
+    loadComboboxCity();
+}//GEN-LAST:event_cbCountryItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbCity;
     private javax.swing.JComboBox cbCountry;
@@ -525,6 +547,7 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         provider.setDataView(enterprise);
         function = FUNCTION_EDIT;
         refreshData();
+        showEdit(false);
     }
 
     @Override
@@ -570,7 +593,7 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         cbCity.setEnabled(editable);
         cbCountry.setEnabled(editable);
         cbEnerpriseParent.setEnabled(editable);
-       
+
 
     }
 
@@ -636,7 +659,7 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     }
 
     @Override
-    public void refreshData() {// lay giu lieu hien thi len form refresh lại
+    public void refreshData() {// lay giu lieu hien thi len form (các txt hay cb) refresh lại
         provider.refreshData();
         try {
             txtEnterpriseName.setText(provider.getDataViewCurrent().getEnterpriseName());
@@ -648,12 +671,13 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             txtFax.setText(provider.getDataViewCurrent().getFax());
             txtTelephone.setText(provider.getDataViewCurrent().getTelephone());
             txtWebsite.setText(provider.getDataViewCurrent().getWebsite());
-            
-            if (provider.getDataViewCurrent().getIdEnterpriseParent() > 0) {
-                for (int i = 0; i < cbEnerpriseParent.getItemCount(); i++) {
-                    if ((cbEnerpriseParent.getItemAt(i) != null)
-                            && ((Enterprise) cbEnerpriseParent.getItemAt(i)).getId() == provider.getDataViewCurrent().getIdEnterpriseParent()) {
-                        cbEnerpriseParent.setSelectedIndex(i);
+
+         //   loadCombobxEnterpriseParent();
+            if (provider.getDataViewCurrent().getIdCountry() > 0) {
+                for (int i = 0; i < cbCountry.getItemCount(); i++) {
+                    if (cbCountry.getItemAt(i) != null
+                            && ((Country) cbCountry.getItemAt(i)).getId() == provider.getDataViewCurrent().getIdCountry()) {
+                        cbCountry.setSelectedIndex(i);
                         break;
                     }
                 }
@@ -667,6 +691,7 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                     }
                 }
             }
+            
             if (provider.getDataViewCurrent().getIdEnterpriseParent() > 0) {
                 for (int i = 0; i < cbEnerpriseParent.getItemCount(); i++) {
                     if ((cbEnerpriseParent.getItemAt(i) != null)
@@ -675,7 +700,11 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                         break;
                     }
                 }
+                
+            }else{
+                cbEnerpriseParent.setSelectedIndex(-1);// load lai ban dau khi select dong khac 
             }
+
             if (provider.getDataViewCurrent().getImage() != null) {
                 lbImage.setIcon(new ImageIcon(provider.getDataViewCurrent().getImage()));
             } else {
@@ -690,12 +719,12 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 
     @Override
     public void canEditData() {// hiển thị khi action chỉnh sửa
-       showEdit(true);
+        showEdit(true);
     }
 
     @Override
     public long editData() { // action edit 
-         if (!getData()) { // nếu không phải nhập dl truyền xuống
+        if (!getData()) { // nếu không phải nhập dl truyền xuống
             return ID_FAILD;
         }
         long id = provider.editData();
@@ -709,7 +738,15 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 
     @Override
     public long removeData() {
-        return removeData();
+        //lay ra id de xoa 
+        long id = provider.getDataViewCurrent().getId();
+        if (provider.removeData() < 0) { // goi den provider xoa du lieu o (DAO ) hay la providerPanelShowEnterPrise
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            return id;
+        }
+
     }
 
     @Override
@@ -734,8 +771,8 @@ private void lbImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 
     @Override
     public void loadDefault() {
-        loadCombobxEnterpriseParent();
-        loadComboboxCountry();
-        loadComboboxCity();
+        //   loadCombobxEnterpriseParent();
+//        loadComboboxCountry();
+//        loadComboboxCity();
     }
 }

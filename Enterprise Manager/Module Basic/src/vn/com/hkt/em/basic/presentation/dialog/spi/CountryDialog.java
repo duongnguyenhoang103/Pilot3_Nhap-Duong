@@ -12,14 +12,15 @@ package vn.com.hkt.em.basic.presentation.dialog.spi;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import org.openide.util.lookup.ServiceProvider;
+import vn.com.hkt.em.basic.business.provide.dialog.api.ICountryDialogProvider;
+import vn.com.hkt.em.basic.business.provide.dialog.spi.CountryDialogProvider;
 import vn.com.hkt.em.basic.data.entities.Country;
 import vn.com.hkt.em.basic.presentation.dialog.api.ICountryDialog;
 
+import vn.com.hkt.em.basic.presentation.dialog.spi.tablemodel.CountryTableModel;
 import vn.com.hkt.em.common.image.ImageTool;
 
 /**
@@ -30,12 +31,12 @@ import vn.com.hkt.em.common.image.ImageTool;
 public class CountryDialog extends javax.swing.JDialog implements ICountryDialog {
 
     private JComboBox comboBox = null;
-  //  private ICountryDialogProvider provider = new CountryDialogProvider();
+    private ICountryDialogProvider provider = new CountryDialogProvider();
     private ImageTool imageTool = new ImageTool();
     private final long LEVEL = 1;
 
     /** Creates new form CountryInfomation */
-    public CountryDialog() {        
+    public CountryDialog() {
         initComponents();
         this.setModal(true);
         this.setLocationRelativeTo(null);
@@ -294,9 +295,9 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (comboBox != null) {
-          //  List<Country>lc=provider.getListCountries();
-        //    lc.add(0,null);                    
-         //   comboBox.setModel(new DefaultComboBoxModel(lc.toArray()));
+            //  List<Country>lc=provider.getListCountries();
+            //    lc.add(0,null);                    
+            //   comboBox.setModel(new DefaultComboBoxModel(lc.toArray()));
         }
     }//GEN-LAST:event_formWindowClosing
 
@@ -306,6 +307,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         addData(0);
+
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
@@ -317,8 +319,14 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void tableCountryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCountryMouseClicked
-        if (evt.getClickCount() >= 2) {
-           // provider.setDataView(provider.getListCountries().get(tableCountry.getSelectedRow()));
+//        if (evt.getClickCount() >= 1) {
+//            provider.setDataView(provider.getListCountries().get(tableCountry.getSelectedRow()));
+//            // hiển thị lên các txt
+//            refreshData();
+//        }
+        if (evt.getClickCount()==1) {
+            provider.setDataView(provider.getListCountries().get(tableCountry.getSelectedRow()));
+            // hiển thị lên các txt
             refreshData();
         }
     }//GEN-LAST:event_tableCountryMouseClicked
@@ -343,7 +351,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
     }//GEN-LAST:event_lbFlagMouseClicked
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-    //    provider.refreshData();
+        //    provider.refreshData();
         refreshData();
     }//GEN-LAST:event_btnRefreshActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -373,6 +381,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
 
     @Override
     public void resetData() {
+        provider.setDataView(new Country()); // tao mới
         txtCountryCode.setText("");
         txtCountryName.setText("");
         txtDescription.setText("");
@@ -384,69 +393,52 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
         btnEdit.setEnabled(false);
         btnRemove.setEnabled(false);
         lbMessenger.setVisible(false);
-     //   provider.setDataView(new Country());
+
+    }
+
+    private void getData() { // lay du lieu dien tu giao dien xuong 
+        provider.getDataViewCurrent().setCountryName(txtCountryName.getText());
+        provider.getDataViewCurrent().setCountryCode(txtCountryCode.getText());
+        provider.getDataViewCurrent().setNationality(txtNationality.getText());
+        provider.getDataViewCurrent().setLanguage(txtLanguage.getText());
+        provider.getDataViewCurrent().setDescription(txtDescription.getText());
+        try {
+            ImageIcon image = (ImageIcon) lbFlag.getIcon();
+            provider.getDataViewCurrent().setNationalityFlag(imageTool.convertImage2ByteArray(image.getImage()));
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setNationalityFlag(null);
+        }
     }
 
     @Override
-    public long addData(long idParent) {
-//        getData();
-//        if (provider.addData(idParent) <0) {
-//            lbMessenger.setVisible(true);
-//            lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
-//            return ID_FAILD;
-//        } else {
-//            lbMessenger.setVisible(false);
-//            resetData();
-//            loadTable();
-//            return provider.getDataViewCurrent().getId();
-//        }
-        return idParent;
-    }
-
-    @Override
-    public long editData() {
-       /// getData();
-       // if (provider.editData() <0) {
+    public long addData(long idParent) {//  add giu lieu do tu giao dien xuong table     
+        getData();
+        if (provider.addData(idParent) < 0) {
             lbMessenger.setVisible(true);
             lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
             return ID_FAILD;
-      //  } else {
-           // lbMessenger.setVisible(false);
-           // resetData();
-        //    loadTable();
-//            return provider.getDataViewCurrent().getId();
-       // }
+        } else {
+            lbMessenger.setVisible(false);
+            loadTable();
+            resetData();
+            return provider.getDataViewCurrent().getId();
+        }
     }
 
     @Override
-    public long removeData() {
-       // long id = provider.getDataViewCurrent().getId();
-      //  if (provider.removeData() <0) {
-            lbMessenger.setText("Hãy chắc chắn là bạn đã chọn 1 quốc gia để xóa");
-            lbMessenger.setVisible(true);
-            return ID_FAILD;
-      //  } else {
-          //  lbMessenger.setVisible(false);
-          //  resetData();
-          //  loadTable();
-           // return id;
-       // }
-       
-    }
-
-    @Override
-    public void refreshData() {
-//        txtCountryCode.setText(provider.getDataViewCurrent().getCountryCode());
-//        txtCountryName.setText(provider.getDataViewCurrent().getCountryName());
-//        txtDescription.setText(provider.getDataViewCurrent().getDescription());
-//        txtLanguage.setText(provider.getDataViewCurrent().getLanguage());
-//        txtNationality.setText(provider.getDataViewCurrent().getNationality());
-//        if (provider.getDataViewCurrent().getNationalityFlag() != null) {
-//            lbFlag.setIcon(new ImageIcon(provider.getDataViewCurrent().getNationalityFlag()));
-//        } else {
-//            lbFlag.setIcon(null);
-//        }
-        canEditData();
+    public void refreshData() { // hiển thị dữ liệu table lên các text
+        //txt.SetText(provide.GetData.GetTen hiển thị)
+        txtCountryCode.setText((provider.getDataViewCurrent().getCountryCode()));
+        txtCountryName.setText(provider.getDataViewCurrent().getCountryName());
+        txtDescription.setText(provider.getDataViewCurrent().getDescription());
+        txtNationality.setText(provider.getDataViewCurrent().getNationality());
+        txtNationality.setText(provider.getDataViewCurrent().getNationality());
+        if (provider.getDataViewCurrent().getNationalityFlag() != null) {
+            lbFlag.setIcon(new ImageIcon(provider.getDataViewCurrent().getNationalityFlag()));
+        } else {
+            lbFlag.setIcon(null);
+        }
+        //  canEditData();
     }
 
     @Override
@@ -457,23 +449,40 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
         btnRemove.setEnabled(true);
     }
 
-    private void getData() {
-//        provider.getDataViewCurrent().setCountryName(txtCountryName.getText());
-//        provider.getDataViewCurrent().setCountryCode(txtCountryCode.getText());
-//        provider.getDataViewCurrent().setNationality(txtNationality.getText());
-//        provider.getDataViewCurrent().setLanguage(txtLanguage.getText());
-//        provider.getDataViewCurrent().setDescription(txtDescription.getText());
-        try {
-            ImageIcon image = (ImageIcon) lbFlag.getIcon();
-           // provider.getDataViewCurrent().setNationalityFlag(imageTool.convertImage2ByteArray(image.getImage()));
-        } catch (Exception e) {
-           // provider.getDataViewCurrent().setNationalityFlag(null);
-        }
+    @Override
+    public long editData() {
+        /// getData();
+        // if (provider.editData() <0) {
+        lbMessenger.setVisible(true);
+        lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
+        return ID_FAILD;
+        //  } else {
+        // lbMessenger.setVisible(false);
+        // resetData();
+        //    loadTable();
+//            return provider.getDataViewCurrent().getId();
+        // }
+    }
+
+    @Override
+    public long removeData() {
+        // long id = provider.getDataViewCurrent().getId();
+        //  if (provider.removeData() <0) {
+        lbMessenger.setText("Hãy chắc chắn là bạn đã chọn 1 quốc gia để xóa");
+        lbMessenger.setVisible(true);
+        return ID_FAILD;
+        //  } else {
+        //  lbMessenger.setVisible(false);
+        //  resetData();
+        //  loadTable();
+        // return id;
+        // }
+
     }
 
     private void loadTable() {
-       // provider.loadAllCountries();
-       // tableCountry.setModel(new CountryTableModel(provider.getListCountries()));
+        provider.loadAllCountries();
+        tableCountry.setModel(new CountryTableModel(provider.getListCountries()));
     }
 
     @Override
@@ -498,7 +507,5 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
 
     @Override
     public void loadDefault() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

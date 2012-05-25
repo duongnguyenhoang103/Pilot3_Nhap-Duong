@@ -165,7 +165,7 @@ private void btnInformationEditActionPerformed(java.awt.event.ActionEvent evt) {
 
     @Override
     public long removeData() {
-      return removeData();
+      return 0;
     }
 
     @Override

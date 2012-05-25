@@ -77,8 +77,6 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
 
         txtCityCode.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.txtCityCode.text")); // NOI18N
 
-        cbCountry.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jScrollPane1.setViewportView(txtDescription);
 
         btnReset.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.btnReset.text")); // NOI18N

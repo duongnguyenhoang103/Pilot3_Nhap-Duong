@@ -155,7 +155,7 @@ public class PanelShowEnterpriseAddressDetails extends javax.swing.JPanel implem
 
     @Override
     public long removeData() {
-      return removeData();
+      return 0;
     }
 
     @Override

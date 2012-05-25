@@ -12,6 +12,7 @@ package vn.com.hkt.em.enterprise.presentation.panel.overview.spi;
 
 import javax.swing.JPanel;
 import org.openide.util.lookup.ServiceProvider;
+import sun.security.pkcs11.P11TlsKeyMaterialGenerator;
 import vn.com.hkt.em.basic.data.entities.Enterprise;
 import vn.com.hkt.em.basic.presentation.panel.show.api.IPanelShowEnterpriseBaisc;
 import vn.com.hkt.em.common.gui.controlshow.api.IControlShowInformation;
@@ -29,12 +30,13 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
     private IPanelShowEnterpriseLegal panelShowEnterpriseLegal;// hien thi len chinh no
      // private IControlShowEnterpriseLegal controlShowEnterpriseLegal; // hien thi khi co gd cha
     private final long LEVEL_ENTERPRISE_BAISC = 2;
-    private PanelShowEnterpriseLegalDetails panelShowEnterpriseLegalDetails;
+    private PanelShowEnterpriseLegalDetails panelShowEnterpriseLegalDetails =new PanelShowEnterpriseLegalDetails();
 
     /** Creates new form PanelShowEnterpriseLegalOverview */
     public PanelShowEnterpriseLegalOverview() {
         initComponents();
         loadExtention();
+       
     }
  private void loadExtention() {
         panelShowEnterpriseLegal = new PanelShowEnterpriseLegalDetails();
@@ -165,13 +167,13 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
 
     @Override
     public long editData() {
-     // return panelShowEnterpriseLegalDetails.editData();
-        return 0;
+     return panelShowEnterpriseLegalDetails.editData();
+       // return 0;
     }
 
     @Override
     public long removeData() {
-     return removeData();
+     return 0;
     }
 
     @Override

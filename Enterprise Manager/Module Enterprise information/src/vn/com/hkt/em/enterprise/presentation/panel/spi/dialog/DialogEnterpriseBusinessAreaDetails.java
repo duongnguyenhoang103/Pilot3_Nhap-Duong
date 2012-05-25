@@ -13,10 +13,13 @@ package vn.com.hkt.em.enterprise.presentation.panel.spi.dialog;
 import java.util.ArrayList;
 import java.util.List;
 import vn.com.hkt.em.basic.data.entities.Enterprise;
+import vn.com.hkt.em.common.event.KeyControlPress;
 import vn.com.hkt.em.enterprise.data.access.api.IBusinessAreaDAO;
 import vn.com.hkt.em.enterprise.data.access.spi.BusinessAreaDAO;
 import vn.com.hkt.em.enterprise.data.entities.EnterpriseBusinessArea;
+import vn.com.hkt.em.enterprise.presentation.dialog.spi.DialogBusinessArea;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseBusinessArea;
+import vn.com.hkt.em.enterprise.presentation.panel.spi.PanelShowEnterpriseBusinessAreaDetails;
 import vn.com.hkt.em.enterprise.presentation.panel.spi.table.model.TableModelEnterpriseBusinessArea;
 
 /**
@@ -27,8 +30,9 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
 
     private List<EnterpriseBusinessArea> businessAreaOfEnterprise;
     private IBusinessAreaDAO businessAreaDAO = new BusinessAreaDAO();
-    private IPanelShowEnterpriseBusinessArea panelShowEnterpriseBusinessAreaDetails;
+    private IPanelShowEnterpriseBusinessArea panelShowEnterpriseBusinessAreaDetails = new PanelShowEnterpriseBusinessAreaDetails();    
     private Enterprise enterprise;
+    private KeyControlPress keyControlPress = new KeyControlPress();// thực hiện bàn phím mở form
 
     /** Creates new form DialogEnterpriseBusinessAreaDetails */
     public DialogEnterpriseBusinessAreaDetails(java.awt.Frame parent, boolean modal) {
@@ -37,9 +41,10 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
     }
 
     public DialogEnterpriseBusinessAreaDetails() {
-          initComponents();
+        initComponents();
         this.setModal(true);
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);        
+       
     }
 
     /** This method is called from within the constructor to
@@ -121,6 +126,11 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
         lbRanking.setText(org.openide.util.NbBundle.getMessage(DialogEnterpriseBusinessAreaDetails.class, "DialogEnterpriseBusinessAreaDetails.lbRanking.text")); // NOI18N
 
         cbBusinessArea.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbBusinessArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cbBusinessAreaMouseClicked(evt);
+            }
+        });
 
         lbBusinessArea.setText(org.openide.util.NbBundle.getMessage(DialogEnterpriseBusinessAreaDetails.class, "DialogEnterpriseBusinessAreaDetails.lbBusinessArea.text")); // NOI18N
 
@@ -221,6 +231,16 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+// an phim + kick chuot mo form 
+private void cbBusinessAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cbBusinessAreaMouseClicked
+   if(keyControlPress.isKeyCTRL()){
+       DialogBusinessArea dialogBusinessArea = new DialogBusinessArea();
+       dialogBusinessArea.setComboBox(cbBusinessArea);
+       dialogBusinessArea.setVisible(true);
+       keyControlPress.setKeyCTRL(false);            
+   }   
+    cbBusinessArea.addKeyListener(keyControlPress);
+}//GEN-LAST:event_cbBusinessAreaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -296,7 +316,7 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
     public void setBusinessAreaOfEnterprise(Enterprise enterprise, List<EnterpriseBusinessArea> businessAreas) {
         this.enterprise = enterprise;
         this.businessAreaOfEnterprise = businessAreas;
-         if (enterprise != null) {
+        if (enterprise != null) {
             txtEnterpriseName.setText(enterprise.getEnterpriseName());
         } else {
             this.enterprise = new Enterprise();
@@ -311,11 +331,10 @@ public class DialogEnterpriseBusinessAreaDetails extends javax.swing.JDialog {
     }
 
     private void loadListIdBusinessAreaOfEnterprise() {
-       
     }
 
     private void loadTable() {
-      TableModelEnterpriseBusinessArea model = new TableModelEnterpriseBusinessArea(businessAreaOfEnterprise);
-      table.setModel(model);
+        TableModelEnterpriseBusinessArea model = new TableModelEnterpriseBusinessArea(businessAreaOfEnterprise);
+        table.setModel(model);
     }
 }
