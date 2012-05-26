@@ -12,6 +12,7 @@ package vn.com.hkt.em.basic.presentation.dialog.spi;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import org.openide.util.lookup.ServiceProvider;
@@ -29,7 +30,7 @@ import vn.com.hkt.em.common.image.ImageTool;
  */
 @ServiceProvider(service = ICountryDialog.class)
 public class CountryDialog extends javax.swing.JDialog implements ICountryDialog {
-
+    
     private JComboBox comboBox = null;
     private ICountryDialogProvider provider = new CountryDialogProvider();
     private ImageTool imageTool = new ImageTool();
@@ -122,11 +123,14 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbFlag, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+            .addComponent(lbFlag, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbFlag, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbFlag, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         txtDescription.setColumns(20);
@@ -212,16 +216,17 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
                         .addComponent(btnEdit)
                         .addGap(6, 6, 6)
                         .addComponent(btnRemove)
-                        .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                            .addComponent(txtCountryName, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                            .addComponent(txtCountryCode, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                            .addComponent(txtNationality, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                            .addComponent(txtLanguage, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtCountryName, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                            .addComponent(txtCountryCode, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                            .addComponent(txtNationality, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                            .addComponent(txtLanguage, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
+                        .addGap(20, 20, 20)))
+                .addGap(9, 9, 9)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lbMessenger, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
@@ -236,6 +241,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(lbCountryName)
@@ -256,8 +262,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
                         .addGap(11, 11, 11)
                         .addComponent(txtLanguage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(11, 11, 11)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnReset)
@@ -292,45 +297,42 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+// load lai cb khi dong form 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (comboBox != null) {
+            comboBox.setModel(new DefaultComboBoxModel(provider.getListCountries().toArray()));
             //  List<Country>lc=provider.getListCountries();
             //    lc.add(0,null);                    
             //   comboBox.setModel(new DefaultComboBoxModel(lc.toArray()));
         }
     }//GEN-LAST:event_formWindowClosing
-
+    
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         resetData();
     }//GEN-LAST:event_btnResetActionPerformed
-
+    
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         addData(0);
-
+        
     }//GEN-LAST:event_btnAddActionPerformed
-
+    
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         editData();
     }//GEN-LAST:event_btnEditActionPerformed
-
+    
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         removeData();
     }//GEN-LAST:event_btnRemoveActionPerformed
-
+    
     private void tableCountryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCountryMouseClicked
-//        if (evt.getClickCount() >= 1) {
-//            provider.setDataView(provider.getListCountries().get(tableCountry.getSelectedRow()));
-//            // hiển thị lên các txt
-//            refreshData();
-//        }
-        if (evt.getClickCount()==1) {
+        
+        if (evt.getClickCount() >= 1) {
             provider.setDataView(provider.getListCountries().get(tableCountry.getSelectedRow()));
             // hiển thị lên các txt
             refreshData();
         }
     }//GEN-LAST:event_tableCountryMouseClicked
-
+    
     private void txtCountryNameCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtCountryNameCaretUpdate
         if (txtCountryName.getText().isEmpty()) {
             lbCountryName.setForeground(Color.red);
@@ -338,7 +340,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
             lbCountryName.setForeground(Color.black);
         }
     }//GEN-LAST:event_txtCountryNameCaretUpdate
-
+    
     private void lbFlagMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbFlagMouseClicked
         if (evt.getClickCount() < 2) {
             return;
@@ -349,9 +351,9 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
             lbFlag.setIcon(flag);
         }
     }//GEN-LAST:event_lbFlagMouseClicked
-
+    
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-        //    provider.refreshData();
+        provider.refreshData();
         refreshData();
     }//GEN-LAST:event_btnRefreshActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -393,15 +395,16 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
         btnEdit.setEnabled(false);
         btnRemove.setEnabled(false);
         lbMessenger.setVisible(false);
-
+        
     }
-
+    
     private void getData() { // lay du lieu dien tu giao dien xuong 
         provider.getDataViewCurrent().setCountryName(txtCountryName.getText());
         provider.getDataViewCurrent().setCountryCode(txtCountryCode.getText());
         provider.getDataViewCurrent().setNationality(txtNationality.getText());
         provider.getDataViewCurrent().setLanguage(txtLanguage.getText());
         provider.getDataViewCurrent().setDescription(txtDescription.getText());
+        
         try {
             ImageIcon image = (ImageIcon) lbFlag.getIcon();
             provider.getDataViewCurrent().setNationalityFlag(imageTool.convertImage2ByteArray(image.getImage()));
@@ -409,7 +412,7 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
             provider.getDataViewCurrent().setNationalityFlag(null);
         }
     }
-
+    
     @Override
     public long addData(long idParent) {//  add giu lieu do tu giao dien xuong table     
         getData();
@@ -420,92 +423,92 @@ public class CountryDialog extends javax.swing.JDialog implements ICountryDialog
         } else {
             lbMessenger.setVisible(false);
             loadTable();
-            resetData();
-            return provider.getDataViewCurrent().getId();
+            resetData(); // tao moi lai
+            return provider.getDataViewCurrent().getId(); // id data hien thi BE thong qua getDataViewCurrent
         }
     }
-
+    
     @Override
     public void refreshData() { // hiển thị dữ liệu table lên các text
-        //txt.SetText(provide.GetData.GetTen hiển thị)
+        //txt.SetText(provide.GetData.GetTen hiển thị) //
         txtCountryCode.setText((provider.getDataViewCurrent().getCountryCode()));
         txtCountryName.setText(provider.getDataViewCurrent().getCountryName());
         txtDescription.setText(provider.getDataViewCurrent().getDescription());
         txtNationality.setText(provider.getDataViewCurrent().getNationality());
-        txtNationality.setText(provider.getDataViewCurrent().getNationality());
+        txtLanguage.setText(provider.getDataViewCurrent().getLanguage());
         if (provider.getDataViewCurrent().getNationalityFlag() != null) {
             lbFlag.setIcon(new ImageIcon(provider.getDataViewCurrent().getNationalityFlag()));
         } else {
             lbFlag.setIcon(null);
-        }
-        //  canEditData();
+        }//sau khi hien thi du lieu tu table len txt thi show cac nút xóa ,sửa , xem lại
+        canEditData();
     }
-
+    
     @Override
-    public void canEditData() {
+    public void canEditData() { // show cac buuton khi chinh sua
         btnAdd.setEnabled(false);
         btnRefresh.setEnabled(true);
         btnEdit.setEnabled(true);
         btnRemove.setEnabled(true);
     }
-
+    
     @Override
-    public long editData() {
-        /// getData();
-        // if (provider.editData() <0) {
-        lbMessenger.setVisible(true);
-        lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
-        return ID_FAILD;
-        //  } else {
-        // lbMessenger.setVisible(false);
-        // resetData();
-        //    loadTable();
-//            return provider.getDataViewCurrent().getId();
-        // }
+    public long editData() { // chỉnh sửa dl 
+        getData(); // lay hien thi len 
+        if (provider.editData() < 0) {
+            lbMessenger.setVisible(true);
+            lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            resetData();
+            loadTable();
+            return provider.getDataViewCurrent().getId(); // 
+        }
     }
-
+    
     @Override
     public long removeData() {
-        // long id = provider.getDataViewCurrent().getId();
-        //  if (provider.removeData() <0) {
-        lbMessenger.setText("Hãy chắc chắn là bạn đã chọn 1 quốc gia để xóa");
-        lbMessenger.setVisible(true);
-        return ID_FAILD;
-        //  } else {
-        //  lbMessenger.setVisible(false);
-        //  resetData();
-        //  loadTable();
-        // return id;
-        // }
-
+        // lay ra id de xoa 
+        long id = provider.getDataViewCurrent().getId();
+        if (provider.removeData() < 0) {
+            lbMessenger.setText("Hãy chắc chắn là bạn đã chọn 1 quốc gia để xóa");
+            lbMessenger.setVisible(true);
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            resetData();
+            loadTable();
+            return id;
+        }
     }
-
-    private void loadTable() {
-        provider.loadAllCountries();
-        tableCountry.setModel(new CountryTableModel(provider.getListCountries()));
-    }
-
+    
     @Override
     public int getFunction() {
         return ID_FAILD;
     }
-
+    
     @Override
     public void setComboBox(JComboBox comboBox) {
         this.comboBox = comboBox;
     }
-
+    
     @Override
     public String getDescriptionPanel() {
         return "Giao diện chỉnh sủa quốc gia";
     }
-
+    
     @Override
     public boolean checkData() {
         return true;
     }
-
+    
     @Override
     public void loadDefault() {
+    }
+    
+    private void loadTable() {
+        provider.loadAllCountries();
+        tableCountry.setModel(new CountryTableModel(provider.getListCountries()));
     }
 }

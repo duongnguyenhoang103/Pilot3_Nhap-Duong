@@ -61,12 +61,13 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
 
     private void loadCombobxEnterpriseParent() {//load dn cha
         List<Enterprise> le = provider.getEnterprisesAbilityIsParent();
-//        le.add(0,null);
+     //   le.add(0,null);
         cbEnerpriseParent.setModel(new DefaultComboBoxModel(le.toArray()));
     }
 
     private void loadComboboxCountry() {
         List<Country> listCountrys = provider.getCountries();
+       // listCountrys.add(0,null);// them 1 thang rong vao cb
         cbCountry.setModel(new DefaultComboBoxModel(listCountrys.toArray()));
         //  cbCountry.setModel(new DefaultComboBoxModel(provider.getCountries().toArray()));
     }
@@ -75,6 +76,7 @@ public class PanelShowEnterpriseBasic extends javax.swing.JPanel implements IPan
         if (cbCountry.getSelectedItem() != null) {
             Country country = (Country) cbCountry.getSelectedItem();
             List<City> listCitys = provider.getCities(country);
+          //  listCitys.add(0, null);
             cbCity.setModel(new DefaultComboBoxModel(listCitys.toArray()));
         } else {
             cbCity.setModel(new DefaultComboBoxModel());
@@ -681,7 +683,10 @@ private void cbCountryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRS
                         break;
                     }
                 }
+              }else {
+                cbCountry.setSelectedIndex(-1);
             }
+            
             if (provider.getDataViewCurrent().getIdCity() > 0) {
                 for (int i = 0; i < cbCity.getItemCount(); i++) {
                     if (cbCity.getItemAt(i) != null
@@ -690,6 +695,8 @@ private void cbCountryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRS
                         break;
                     }
                 }
+            }else {
+                cbCity.setSelectedIndex(-1);
             }
             
             if (provider.getDataViewCurrent().getIdEnterpriseParent() > 0) {

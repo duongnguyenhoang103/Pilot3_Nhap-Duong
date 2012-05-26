@@ -17,7 +17,7 @@ import vn.com.hkt.em.enterprise.business.provider.panel.api.IProviderPanelShowEn
 import vn.com.hkt.em.enterprise.business.provider.panel.spi.ProviderPanelShowEnterpriseAddress;
 import vn.com.hkt.em.enterprise.data.entities.EnterpriseAddress;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseAddress;
-import vn.com.hkt.em.enterprise.presentation.panel.spi.table.model.TableModelEnterpriseAddress;
+import vn.com.hkt.em.enterprise.presentation.panel.spi.tablemodel.TableModelEnterpriseAddress;
 
 /**
  *

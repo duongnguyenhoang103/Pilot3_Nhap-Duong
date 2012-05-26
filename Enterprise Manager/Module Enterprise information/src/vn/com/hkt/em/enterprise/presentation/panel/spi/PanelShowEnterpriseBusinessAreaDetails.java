@@ -18,7 +18,7 @@ import vn.com.hkt.em.enterprise.business.provider.panel.api.IProviderPanelShowEn
 import vn.com.hkt.em.enterprise.business.provider.panel.spi.ProviderPanelShowEnterpriseBusinessArea;
 import vn.com.hkt.em.enterprise.data.entities.EnterpriseBusinessArea;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseBusinessArea;
-import vn.com.hkt.em.enterprise.presentation.panel.spi.table.model.TableModelEnterpriseBusinessArea;
+import vn.com.hkt.em.enterprise.presentation.panel.spi.tablemodel.TableModelEnterpriseBusinessArea;
 
 /**
  *

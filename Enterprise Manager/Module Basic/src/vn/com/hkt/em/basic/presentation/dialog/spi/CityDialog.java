@@ -10,10 +10,17 @@
  */
 package vn.com.hkt.em.basic.presentation.dialog.spi;
 
+import java.awt.Color;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import org.openide.util.lookup.ServiceProvider;
+import vn.com.hkt.em.basic.business.provide.dialog.spi.CityDialogProvider;
+import vn.com.hkt.em.basic.data.entities.City;
 import vn.com.hkt.em.basic.data.entities.Country;
 import vn.com.hkt.em.basic.presentation.dialog.api.ICityDialog;
+import vn.com.hkt.em.basic.presentation.dialog.spi.tablemodel.CityTableModel;
 
 /**
  *
@@ -23,6 +30,8 @@ import vn.com.hkt.em.basic.presentation.dialog.api.ICityDialog;
 public class CityDialog extends javax.swing.JDialog implements ICityDialog {
 
     private JComboBox comboBox;
+    private Country countryFirst;
+    private CityDialogProvider provider = new CityDialogProvider();
 
     /** Creates new form CityDialog */
     public CityDialog(java.awt.Frame parent, boolean modal) {
@@ -35,6 +44,9 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         this.setModal(true);
         this.setLocationRelativeTo(null);
         resetData();
+        loadTable();
+        loadCbCountry();
+
     }
 
     /** This method is called from within the constructor to
@@ -66,6 +78,11 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         lbCityName.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.lbCityName.text")); // NOI18N
 
@@ -74,6 +91,11 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         lbCountry.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.lbCountry.text")); // NOI18N
 
         txtCityName.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.txtCityName.text")); // NOI18N
+        txtCityName.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtCityNameCaretUpdate(evt);
+            }
+        });
 
         txtCityCode.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.txtCityCode.text")); // NOI18N
 
@@ -87,10 +109,25 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         });
 
         btnAdd.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.btnAdd.text")); // NOI18N
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnEdit.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.btnEdit.text")); // NOI18N
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnRemove.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.btnRemove.text")); // NOI18N
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         tableCity.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -103,12 +140,22 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tableCity.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCityMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tableCity);
 
         lbMessenger.setForeground(new java.awt.Color(255, 0, 0));
         lbMessenger.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.lbMessenger.text")); // NOI18N
 
         btnRefresh.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.btnRefresh.text")); // NOI18N
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText(org.openide.util.NbBundle.getMessage(CityDialog.class, "CityDialog.jLabel4.text_1")); // NOI18N
 
@@ -205,6 +252,51 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         resetData();
     }//GEN-LAST:event_btnResetActionPerformed
 
+private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    addData(0);
+}//GEN-LAST:event_btnAddActionPerformed
+
+private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+    provider.refreshData();
+    refreshData();
+
+}//GEN-LAST:event_btnRefreshActionPerformed
+
+private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+    editData();
+}//GEN-LAST:event_btnEditActionPerformed
+
+private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+    removeData();
+}//GEN-LAST:event_btnRemoveActionPerformed
+
+private void txtCityNameCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtCityNameCaretUpdate
+    if (txtCityName.getText().isEmpty()) {
+        lbCityName.setForeground(Color.red);
+    } else {
+        lbCityName.setForeground(Color.black);
+    }
+}//GEN-LAST:event_txtCityNameCaretUpdate
+
+private void tableCityMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCityMouseClicked
+    if (evt.getClickCount() >= 1) {
+        provider.setDataView(provider.getListCity().get(tableCity.getSelectedRow()));
+        // hien thi len cac text
+        refreshData();
+    }
+}//GEN-LAST:event_tableCityMouseClicked
+    // khi dong form load  lai dl vua them 
+private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+    if (comboBox != null) {
+//            List<City> lc = provider.getListCity(countryFirst);
+//            lc.add(0, null);
+//            comboBox.setModel(new DefaultComboBoxModel(lc.toArray()));
+        comboBox.setModel(new DefaultComboBoxModel(provider.getListCity().toArray()));
+    }
+
+    // comboBox.setModel(new DefaultComboBoxModel(provider.getListCity().toArray()));
+}//GEN-LAST:event_formWindowClosed
+
     /**
      * @param args the command line arguments
      */
@@ -271,6 +363,8 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
 
     @Override
     public void setCountryFirst(Country countryFirst) {
+        this.countryFirst = countryFirst;
+        loadCbCountry();
     }
 
     @Override
@@ -284,7 +378,8 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
     }
 
     @Override
-    public void resetData() {
+    public void resetData() {// 
+        provider.setDataView(new City());// tao moi BE
         txtCityCode.setText("");
         txtCityName.setText("");
         txtDescription.setText("");
@@ -293,32 +388,105 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
         btnEdit.setEnabled(false);
         btnRemove.setEnabled(false);
         //    provider.setDataView(new City());
+        //  loadCbCountry();
         lbMessenger.setVisible(false);
         lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
+         try { //lay BE cua Country
+            Country country = (Country) cbCountry.getSelectedItem();
+            provider.getDataViewCurrent().setIdCountry(country.getId());
+
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setIdCountry(0);
+        }
+    }
+
+    private void getData() { // lay du lieu dien tu tren txt xuong table (provider)
+        //provide.getDAta. truyen txt vao 
+
+        provider.getDataViewCurrent().setCityCode(txtCityCode.getText());
+        provider.getDataViewCurrent().setCityName(txtCityName.getText());
+        provider.getDataViewCurrent().setDescription(txtDescription.getText());
+        try { //lay BE cua Country
+            Country country = (Country) cbCountry.getSelectedItem();
+            provider.getDataViewCurrent().setIdCountry(country.getId());
+
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setIdCountry(0);
+        }
     }
 
     @Override
-    public long addData(long idParent) {
-        return idParent;
+    public long addData(long idParent) { // luu dl tu tren giao dien xuong table provider
+        getData();
+        if (provider.addData(idParent) < 0) {
+            lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
+            lbMessenger.setVisible(true);
+        } else {
+            lbMessenger.setVisible(false);
+            resetData();
+            loadTable();
+        }
+        return provider.getDataViewCurrent().getId();
 
     }
 
     @Override
-    public void refreshData() {
+    public void refreshData() { // hien thi du lieu tu table len cac txt
+        txtCityCode.setText(provider.getDataViewCurrent().getCityCode());
+        txtCityName.setText(provider.getDataViewCurrent().getCityName());
+        txtDescription.setText(provider.getDataViewCurrent().getDescription());
+
+        if (provider.getDataViewCurrent().getIdCountry() > 0) {
+            for (int i = 0; i < cbCountry.getItemCount(); i++) {
+                if (cbCountry.getItemAt(i) != null
+                        && ((Country) cbCountry.getItemAt(i)).getId() == provider.getDataViewCurrent().getIdCountry()) {
+                    cbCountry.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }//       else {
+//            cbCountry.setSelectedIndex(-1);// load lai ban dau sau  khi them , select dong khac 
+//        }
+        canEditData();
     }
 
     @Override
     public void canEditData() {
+        btnAdd.setEnabled(false);
+        btnRefresh.setEnabled(true);
+        btnEdit.setEnabled(true);
+        btnRemove.setEnabled(true);
     }
 
     @Override
-    public long editData() {
-        return editData();
+    public long editData() { // lay dl tu tableSelect // sau do getDAta
+        getData();
+        if (provider.editData() < 0) {
+            lbMessenger.setText("Hãy xem lại các phần bị bôi đỏ");
+            lbMessenger.setVisible(true);
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            resetData();
+            loadTable();
+            return provider.getDataViewCurrent().getId(); // 
+        }
     }
 
     @Override
     public long removeData() {
-        return removeData();
+        //lay id de xoa
+        long id = provider.getDataViewCurrent().getId();
+        if (provider.removeData() < 0) {
+            lbMessenger.setText("Hãy chắc chắn là bạn đã chọn 1 quốc gia để xóa");
+            lbMessenger.setVisible(true);
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            resetData();
+            loadTable();
+            return id;
+        }
     }
 
     @Override
@@ -328,10 +496,31 @@ public class CityDialog extends javax.swing.JDialog implements ICityDialog {
 
     @Override
     public boolean checkData() {
-        return true;
+        if (lbCityName.getForeground() == Color.red
+                || lbCityName.getForeground() == Color.red
+                || lbCountry.getForeground() == Color.red) {
+            lbMessenger.setVisible(true);
+            lbMessenger.setText("Hãy chú ý dữ liệu những phần bị đỏ");
+            return false;
+        } else {
+            lbMessenger.setVisible(false);
+            return true;
+        }
     }
 
     @Override
     public void loadDefault() {
+    }
+
+    private void loadTable() {
+        provider.loadAllCities(); // load toan bo danh sach city len roi moi mo form 
+        CityTableModel cityTableModel = new CityTableModel(provider.getListCity());
+        tableCity.setModel(cityTableModel);
+    }
+
+    private void loadCbCountry() {
+        resetData();
+        List<Country> listCountrys = provider.getListCountry();
+        cbCountry.setModel(new DefaultComboBoxModel(listCountrys.toArray()));
     }
 }

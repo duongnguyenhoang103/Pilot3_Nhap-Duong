@@ -20,7 +20,8 @@ import vn.com.hkt.em.enterprise.data.entities.EnterpriseBusinessArea;
 import vn.com.hkt.em.enterprise.presentation.dialog.spi.DialogBusinessArea;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseBusinessArea;
 import vn.com.hkt.em.enterprise.presentation.panel.spi.PanelShowEnterpriseBusinessAreaDetails;
-import vn.com.hkt.em.enterprise.presentation.panel.spi.table.model.TableModelEnterpriseBusinessArea;
+import vn.com.hkt.em.enterprise.presentation.panel.spi.tablemodel.TableModelEnterpriseBusinessArea;
+
 
 /**
  *
