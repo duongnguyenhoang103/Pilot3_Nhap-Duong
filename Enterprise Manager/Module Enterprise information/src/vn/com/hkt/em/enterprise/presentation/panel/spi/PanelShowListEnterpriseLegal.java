@@ -10,15 +10,29 @@
  */
 package vn.com.hkt.em.enterprise.presentation.panel.spi;
 
+import java.util.List;
+import org.openide.util.lookup.ServiceProvider;
+import vn.com.hkt.em.basic.presentation.panel.show.api.IPanelShowListEnterpriseBasic;
+import vn.com.hkt.em.common.gui.controlshow.api.IControlShowListInformation;
+import vn.com.hkt.em.enterprise.business.provider.panel.api.IProviderPanelShowListEnterpriseLegal;
+import vn.com.hkt.em.enterprise.business.provider.panel.spi.ProviderPanelShowListenterpriseLegal;
+import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowListEnterpriseLegal;
+import vn.com.hkt.em.enterprise.presentation.panel.spi.tablemodel.TableModelListEnterpriseLegal;
+
 /**
  *
  * @author duong
  */
-public class PanelShowListEnterpriseLegal extends javax.swing.JPanel {
+@ServiceProvider(service = IPanelShowListEnterpriseBasic.class)
+public class PanelShowListEnterpriseLegal extends javax.swing.JPanel implements IPanelShowListEnterpriseBasic , IPanelShowListEnterpriseLegal {
+
+    private IProviderPanelShowListEnterpriseLegal provider = new ProviderPanelShowListenterpriseLegal();
+    private IControlShowListInformation controlShowListInformation;
 
     /** Creates new form PanelShowListEnterpriseLegal */
     public PanelShowListEnterpriseLegal() {
         initComponents();
+        loadTable();
     }
 
     /** This method is called from within the constructor to
@@ -30,17 +44,131 @@ public class PanelShowListEnterpriseLegal extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lbMessenger = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        cbSearch = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+
+        setBorder(javax.swing.BorderFactory.createTitledBorder(null, org.openide.util.NbBundle.getMessage(PanelShowListEnterpriseLegal.class, "PanelShowListEnterpriseLegal.border.title"), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION)); // NOI18N
+
+        lbMessenger.setForeground(new java.awt.Color(255, 0, 0));
+        lbMessenger.setText(org.openide.util.NbBundle.getMessage(PanelShowListEnterpriseLegal.class, "PanelShowListEnterpriseLegal.lbMessenger.text")); // NOI18N
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(PanelShowListEnterpriseLegal.class, "PanelShowListEnterpriseLegal.jLabel1.text")); // NOI18N
+
+        txtSearch.setText(org.openide.util.NbBundle.getMessage(PanelShowListEnterpriseLegal.class, "PanelShowListEnterpriseLegal.txtSearch.text")); // NOI18N
+
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(PanelShowListEnterpriseLegal.class, "PanelShowListEnterpriseLegal.jLabel2.text")); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(table);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 449, Short.MAX_VALUE)
+            .addComponent(lbMessenger, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 277, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbMessenger))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cbSearch;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbMessenger;
+    private javax.swing.JTable table;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public long getLevelPanelShowListEnterpriseBasic() {
+        return 2;
+    }
+
+    @Override
+    public void setControlShowListInformation(IControlShowListInformation controlShowListInformation) {
+    }
+
+    @Override
+    public void loadDataDefault() {
+    }
+
+    @Override
+    public void loadData(List<Long> listId) {
+        if (listId != null) {
+            provider.loaddListInformation(listId);
+        } else {
+            provider.loadAllInformation();
+        }
+        loadTable();
+    }
+
+    @Override
+    public void searchData(String worldSearch, String typeSearch) {
+    }
+
+    @Override
+    public String toString() {
+        return "Danh sách thông tin pháp lý của doanh nghiệp";
+    }
+
+    private void loadTable() {
+        TableModelListEnterpriseLegal model = new TableModelListEnterpriseLegal(provider.getListInformation());
+        table.setModel(model);
+    }
 }

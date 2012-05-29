@@ -10,14 +10,22 @@
  */
 package vn.com.hkt.em.enterprise.presentation.panel.spi;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import org.openide.util.lookup.ServiceProvider;
 import vn.com.hkt.em.basic.data.entities.Enterprise;
+import vn.com.hkt.em.basic.data.entities.Person;
 import vn.com.hkt.em.common.data.CheckData;
 import vn.com.hkt.em.common.event.KeyControlPress;
+import vn.com.hkt.em.enterprise.business.provider.panel.api.IProviderPanelShowEnterpriseLegal;
+import vn.com.hkt.em.enterprise.business.provider.panel.spi.ProviderPanelShowEnterpriseLegal;
 import vn.com.hkt.em.enterprise.data.entities.EnterpriseLegal;
+import vn.com.hkt.em.enterprise.data.entities.EnterpriseType;
+import vn.com.hkt.em.enterprise.presentation.dialog.spi.DialogEnterpriseType;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseLegal;
 
 /**
@@ -30,7 +38,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
     private final long LEVEL_ENTERPRISE_LEGAL = 1;
     private KeyControlPress kl = new KeyControlPress();
     private int function;
-    //  private IProviderPanelShowEnterpriseLegal provider = new ProviderPanelShowEnterpriseLegal();
+    private IProviderPanelShowEnterpriseLegal provider = new ProviderPanelShowEnterpriseLegal();
     private CheckData checkData = new CheckData();
 
     /** Creates new form PanelShowEnterpriseLegalDetails */
@@ -38,6 +46,18 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         initComponents();
         function = FUNCTION_CREATE;
         resetData();
+        loadComboBox();
+        loadListener();
+    }
+
+    private void loadListener() {
+        cbEnterpriseType.addKeyListener(kl);
+        cbEnterpriseType.addMouseListener(new CTR_CLICK(cbEnterpriseType));
+        setDefaultListenerDateChooser();
+    }
+
+    private void setDefaultListenerDateChooser() {
+        
     }
 
     private class CTR_CLICK extends MouseAdapter {
@@ -52,9 +72,9 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() >= 2 && kl.isKeyCTRL()) {
                 if (comboBox.equals(cbEnterpriseType)) {
-//                    EnterpriseTypeDialog dialog = new EnterpriseTypeDialog();
-//                    dialog.setComboBox(comboBox);
-//                    dialog.setVisible(true);
+                    DialogEnterpriseType dialog = new DialogEnterpriseType();
+                    dialog.setComboBox(comboBox);
+                    dialog.setVisible(true);
                 }
                 kl.setKeyCTRL(false);
             }
@@ -189,8 +209,6 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
         lbResponsibleLegal.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbResponsibleLegal.text")); // NOI18N
 
-        cbEnterpriseType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         txtTaxCodeNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtTaxCodeNumber.text")); // NOI18N
 
         txtCharteredCapital.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtCharteredCapital.text")); // NOI18N
@@ -202,8 +220,6 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         txtLegalCapital.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtLegalCapital.text")); // NOI18N
 
         lbEnterpriseType.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbEnterpriseType.text")); // NOI18N
-
-        cbResponsibleLegal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         txtBusinessResgitrationNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtBusinessResgitrationNumber.text")); // NOI18N
 
@@ -345,44 +361,45 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public long getLevelPanelShowEnterpriseLegal() {
-       return LEVEL_ENTERPRISE_LEGAL;
+        return LEVEL_ENTERPRISE_LEGAL;
     }
 
     @Override
     public void setEnterpriseLegal(EnterpriseLegal enterpriseLegal) {
-//      provider.setDataView(enterpriseLegal);
-//        refreshData();
+        provider.setDataView(enterpriseLegal);
+        refreshData();
         function = FUNCTION_EDIT;
     }
 
     @Override
     public EnterpriseLegal getEnterpriseLegal() {
-      return null;
+        return provider.getDataViewCurrent();
     }
 
     @Override
     public void setEnterprise(Enterprise enterprise) {
-     
+        provider.setEnterprise(enterprise);
+        refreshData();
     }
 
     @Override
     public Enterprise getEnterprise() {
-       return null;
+        return null;
     }
 
     @Override
     public String getDescriptionPanel() {
-       return "Thông tin pháp lý";
+        return "Thông tin pháp lý";
     }
 
     @Override
     public void resetData() {
-       //  showEdit(true);
-      //  provider.setEnterprise(new Enterprise());
+        showEdit(true);
+        provider.setEnterprise(new Enterprise());
         txtBusinessRegistrationTime.setText("");
         txtBusinessResgitrationNumber.setText("");
         txtCharteredCapital.setText("");
-      //  txtEnterpriseName.setText(provider.getEnterpriseName());
+        txtEnterpriseName.setText(provider.getEnterpriseName());
         txtEnterpriseNameEnglish.setText("");
         txtEnterpriseNameVN.setText("");
         txtLegalCapital.setText("");
@@ -390,43 +407,152 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         lbMessenger.setVisible(false);
     }
 
-    @Override
-    public long addData(long idParent) {
-      return idParent;
+    private void showEdit(boolean edit) {
+        txtBusinessRegistrationTime.setEnabled(edit);
+        txtBusinessResgitrationNumber.setEnabled(edit);
+        txtCharteredCapital.setEnabled(edit);
+        txtEnterpriseNameEnglish.setEnabled(edit);
+        txtEnterpriseNameVN.setEnabled(edit);
+        txtLegalCapital.setEnabled(edit);
+        txtTaxCodeNumber.setEnabled(edit);
+        dcDateEstablishment.setEnabled(edit);
+        dcDateRegistration.setEnabled(edit);
+        cbEnterpriseType.setEnabled(edit);
+        cbResponsibleLegal.setEnabled(edit);
+    }
+
+    private boolean getData() { // truyen dl tu txt xuong table
+        if (!checkData()) {
+            return false;
+        }
+        provider.getDataViewCurrent().setEnterpriseNameVietNam(txtEnterpriseNameVN.getText());
+        provider.getDataViewCurrent().setEnterpriseNameEnglish(txtEnterpriseNameEnglish.getText());
+        provider.getDataViewCurrent().setDateEstablishment(dcDateEstablishment.getDate());
+        provider.getDataViewCurrent().setDateRegistration(dcDateRegistration.getDate());
+        provider.getDataViewCurrent().setBusinessRegistrationTime(txtBusinessRegistrationTime.getText());
+        try {
+            EnterpriseLegal enterpriseLegal = (EnterpriseLegal) cbEnterpriseType.getSelectedItem();
+            provider.getDataViewCurrent().setIdEnterpriseType(enterpriseLegal.getId());
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setIdEnterpriseType(0);
+        }
+        try {
+            Person person = (Person) cbResponsibleLegal.getSelectedItem();
+            provider.getDataViewCurrent().setIdPersonResponsibleLegal(person.getId());
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setIdPersonResponsibleLegal(0);
+        }
+        try {
+            provider.getDataViewCurrent().setCharteredCapital(Float.valueOf(txtCharteredCapital.getText()));
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setCharteredCapital(0);
+        }
+        try {
+            provider.getDataViewCurrent().setLegalCapital(Float.valueOf(txtLegalCapital.getText()));
+        } catch (Exception e) {
+            provider.getDataViewCurrent().setLegalCapital(0);
+        }
+        provider.getDataViewCurrent().setBusinessResgitrationNumber(txtBusinessResgitrationNumber.getText());
+        provider.getDataViewCurrent().setTaxCodeNumber(txtTaxCodeNumber.getText());
+        return true;
     }
 
     @Override
-    public void refreshData() {
-        
+    public long addData(long idParent) {
+        if (!getData()) {
+            return ID_FAILD;
+        }
+        long id = provider.addData(idParent);
+        if (id < 0) {
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            return id;
+        }
+
+    }
+
+    @Override
+    public void refreshData() { //hien thi len txt
+        provider.refreshData();
+     //   JOptionPane.showMessageDialog(null, "OK");
+        txtEnterpriseName.setText(provider.getEnterpriseName()); // lay ten da co hien thi len 
+        txtBusinessRegistrationTime.setText(provider.getDataViewCurrent().getBusinessRegistrationTime());
+        txtBusinessResgitrationNumber.setText(provider.getDataViewCurrent().getBusinessResgitrationNumber());
+        txtCharteredCapital.setText(String.valueOf(provider.getDataViewCurrent().getCharteredCapital()));
+        txtEnterpriseName.setText(provider.getEnterpriseName());
+        txtEnterpriseNameEnglish.setText(provider.getDataViewCurrent().getEnterpriseNameEnglish());
+        txtEnterpriseNameVN.setText(provider.getDataViewCurrent().getEnterpriseNameVietNam());
+        txtLegalCapital.setText(String.valueOf(provider.getDataViewCurrent().getLegalCapital()));
+        txtTaxCodeNumber.setText(provider.getDataViewCurrent().getTaxCodeNumber());
+        dcDateEstablishment.setDate(provider.getDataViewCurrent().getDateEstablishment());
+        dcDateRegistration.setDate(provider.getDataViewCurrent().getDateRegistration());
+        loadComboBox();
+        for (int i = 0; i < cbEnterpriseType.getItemCount(); i++) {
+            try {
+                EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getSelectedItem();
+                if (enterpriseType.getId() == provider.getDataViewCurrent().getIdEnterpriseType()) {
+                    cbEnterpriseType.setSelectedIndex(i);
+                    break;
+                }
+            } catch (Exception e) {
+            }
+        }
+        for (int i = 0; i < cbResponsibleLegal.getItemCount(); i++) {
+            try {
+                Person person = (Person) cbResponsibleLegal.getSelectedItem();
+                if (person.getId() == provider.getDataViewCurrent().getIdPersonResponsibleLegal()) {
+                    cbResponsibleLegal.setSelectedIndex(i);
+                    break;
+                }
+            } catch (Exception e) {
+            }
+        }
+        showEdit(false);
     }
 
     @Override
     public void canEditData() {
-        
     }
 
     @Override
     public long editData() {
-      return 0;
+        return 0;
     }
 
     @Override
     public long removeData() {
-       return 0;
+        return 0;
     }
 
     @Override
     public int getFunction() {
-       return function;
+        return function;
     }
 
     @Override
     public boolean checkData() {
-       return true;
+        if (lbBusinessRegistrationTime.getForeground().equals(Color.red)
+                || lbBusinessResgitrationNumber.getForeground().equals(Color.red)
+                || lbCharteredCapital.getForeground().equals(Color.red)
+                || lbDateEstablishment.getForeground().equals(Color.red)
+                || lbDateRegistration.getForeground().equals(Color.red)
+                || lbLegalCapital.getForeground().equals(Color.red)
+                || lbTaxCodeNumber.getForeground().equals(Color.red)) {
+            lbMessenger.setVisible(true);
+            lbMessenger.setText("Hãy chú ý dữ liệu những phần bị đỏ");
+            return false;
+        }
+        lbMessenger.setVisible(false);
+        return true;
     }
 
     @Override
     public void loadDefault() {
-       
+    }
+
+    private void loadComboBox() {
+        cbEnterpriseType.setModel(new DefaultComboBoxModel(provider.getEnterpriseTypes().toArray()));
+        cbResponsibleLegal.setModel(new DefaultComboBoxModel(provider.getPersons().toArray()));
     }
 }
