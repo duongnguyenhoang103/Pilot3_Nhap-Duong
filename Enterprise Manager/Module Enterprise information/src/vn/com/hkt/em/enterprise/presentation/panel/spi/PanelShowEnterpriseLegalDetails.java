@@ -13,9 +13,12 @@ package vn.com.hkt.em.enterprise.presentation.panel.spi;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import org.openide.util.lookup.ServiceProvider;
 import vn.com.hkt.em.basic.data.entities.Enterprise;
 import vn.com.hkt.em.basic.data.entities.Person;
@@ -57,6 +60,48 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
     }
 
     private void setDefaultListenerDateChooser() {
+         ((JTextField) dcDateEstablishment.getDateEditor().getUiComponent()).addCaretListener(new CaretListener() {
+
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                if (((JTextField) dcDateEstablishment.getDateEditor().getUiComponent()).getText().isEmpty()) {
+                    lbDateEstablishment.setForeground(Color.black);
+                    return;
+                }
+                try {
+                    Date date = dcDateEstablishment.getDate();
+                    if (date == null) {
+                        lbDateEstablishment.setForeground(Color.red);
+                    } else {
+                        lbDateEstablishment.setForeground(Color.black);
+                    }
+                } catch (Exception ex) {
+                    lbDateEstablishment.setForeground(Color.red);
+                }
+            }
+        });
+
+        //lay dl  dcDateRegistration khi thay doi datepicker
+        ((JTextField) dcDateRegistration.getDateEditor().getUiComponent()).addCaretListener(new CaretListener() {
+
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                if (((JTextField) dcDateRegistration.getDateEditor().getUiComponent()).getText().isEmpty()) {
+                    lbDateRegistration.setForeground(Color.black);
+                    return;
+                }
+                try {
+                    Date date = dcDateRegistration.getDate();
+                    if (date == null) {
+                        lbDateRegistration.setForeground(Color.red);
+                    } else {
+                        lbDateRegistration.setForeground(Color.black);
+                    }
+                } catch (Exception ex) {
+                    lbDateRegistration.setForeground(Color.red);
+                }
+            }
+        });
         
     }
 
@@ -513,16 +558,34 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public void canEditData() {
+        showEdit(true);
     }
 
     @Override
-    public long editData() {
-        return 0;
+    public long editData() { // chinh sua
+         if (!getData()) {
+            return ID_FAILD;
+        } else {
+            long id = provider.editData();
+            if (id < 0) {
+                return ID_FAILD;
+            } else {
+                lbMessenger.setVisible(false);
+                return id;
+            }
+        }
     }
 
     @Override
     public long removeData() {
-        return 0;
+       long id = provider.getDataViewCurrent().getId();
+         if (provider.removeData() < 0) {
+            return ID_FAILD;
+        } else {
+            lbMessenger.setVisible(false);
+            return id;
+        }
+               
     }
 
     @Override
