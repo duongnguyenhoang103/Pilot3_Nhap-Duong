@@ -5,6 +5,7 @@
 package vn.com.hkt.em.enterprise.business.provider.panel.spi;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.openide.util.Lookup;
 import vn.com.hkt.em.basic.data.access.api.IEnterpriseDAO;
 import vn.com.hkt.em.basic.data.access.api.IPersonDAO;
@@ -28,6 +29,7 @@ public class ProviderPanelShowEnterpriseLegal implements IProviderPanelShowEnter
     private IEnterpriseLegalDAO enterpriseLegalDAO = new EnterpriseLegalDAO();
     private EnterpriseLegal enterpriseLegal;
     private Enterprise enterprise;
+    private IEnterpriseDAO edao = Lookup.getDefault().lookup(IEnterpriseDAO.class);
 
     public ProviderPanelShowEnterpriseLegal() {
         enterpriseLegal = new EnterpriseLegal();
@@ -49,9 +51,11 @@ public class ProviderPanelShowEnterpriseLegal implements IProviderPanelShowEnter
     public void refreshData() {
         enterpriseLegal = enterpriseLegalDAO.getById(enterpriseLegal.getId());
         if (enterpriseLegal == null) {
-            enterpriseLegal = new EnterpriseLegal();
-            if (enterprise != null) {
-                enterpriseLegal.setIdEnterprise(enterprise.getId());
+            enterpriseLegal = new EnterpriseLegal();            
+        } else {
+            enterprise = edao.getById(enterpriseLegal.getIdEnterprise());
+            if (enterprise == null) {
+                enterprise = new Enterprise();
             }
         }
     }
@@ -83,8 +87,7 @@ public class ProviderPanelShowEnterpriseLegal implements IProviderPanelShowEnter
     }
 
     @Override
-    public void setDataView(EnterpriseLegal obj) {
-        IEnterpriseDAO edao = Lookup.getDefault().lookup(IEnterpriseDAO.class);
+    public void setDataView(EnterpriseLegal obj) {        
         enterprise = edao.getById(obj.getIdEnterprise());
         if (enterprise == null) {
             enterprise = new Enterprise();
@@ -115,6 +118,7 @@ public class ProviderPanelShowEnterpriseLegal implements IProviderPanelShowEnter
 
     @Override
     public String getEnterpriseName() {
+      
         if (enterprise == null) {
             enterprise = new Enterprise();
         }

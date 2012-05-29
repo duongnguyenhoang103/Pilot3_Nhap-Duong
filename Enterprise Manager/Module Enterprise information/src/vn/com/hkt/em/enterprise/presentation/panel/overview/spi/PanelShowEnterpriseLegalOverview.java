@@ -133,47 +133,42 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
     // thuc hien khi co form con load laj cha chinh no
     @Override
     public void setEnterprise(Enterprise enterprise) {
-//          panelShowEnterpriseLegalDetails.setEnterprise(enterprise);
-//        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
-//            ((IPanelShowEnterpriseLegal) controlShowEnterpriseLegal.getListPanelShow().get(i)).setEnterpriseLegal(panelShowEnterpriseLegalDetails.getEnterpriseLegal());
-//        }
+        panelShowEnterpriseLegal.setEnterprise(enterprise);
     }
 
     @Override
     public String getDescriptionPanel() {
-       return "thông tin pháp lý";
-    // return panelShowEnterpriseLegalDetails.getDescriptionPanel();
+       return "thông tin pháp lý";    
     }
 
     @Override
     public void resetData() {
-    
+        panelShowEnterpriseLegal.resetData();
     }
 
     @Override
     public long addData(long idParent) {
-      return idParent;
+      return panelShowEnterpriseLegal.addData(idParent);
     }
 
     @Override
     public void refreshData() {
-       
-    }
+        panelShowEnterpriseLegal.refreshData();
+    }   
 
     @Override
     public void canEditData() {
-      
+       panelShowEnterpriseLegal.canEditData();
     }
 
     @Override
     public long editData() {
-     return panelShowEnterpriseLegalDetails.editData();
-       // return 0;
+     return panelShowEnterpriseLegalDetails.editData();       
     }
 
     @Override
     public long removeData() {
-     return 0;
+        return panelShowEnterpriseLegal.removeData();
     }
 
     @Override
@@ -183,21 +178,17 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
 
     @Override
     public boolean checkData() {
-        return true;
+        return panelShowEnterpriseLegal.checkData();
     }
 
     @Override
     public void loadDefault() {
-//        for (int i = 0; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
-//            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).loadDefault();
-//        }
+        panelShowEnterpriseLegal.loadDefault();
     }
 
     @Override
     public void reloadPanelShowInformation() {
-//         panelShowEnterpriseLegalDetails =
-//                (PanelShowEnterpriseLegalDetails) controlShowEnterpriseLegal.getPanelControlShowInformation().getListPanelShow().get(0);
-//        scrollPane.setViewportView(panelShowEnterpriseLegalDetails);
+        
     }
 
     @Override
