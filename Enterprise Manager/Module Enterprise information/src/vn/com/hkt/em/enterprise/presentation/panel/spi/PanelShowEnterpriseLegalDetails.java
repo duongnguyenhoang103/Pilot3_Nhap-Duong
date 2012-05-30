@@ -14,8 +14,10 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -43,6 +45,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
     private int function;
     private IProviderPanelShowEnterpriseLegal provider = new ProviderPanelShowEnterpriseLegal();
     private CheckData checkData = new CheckData();
+    private long idEnterpriseTypeChoise;
 
     /** Creates new form PanelShowEnterpriseLegalDetails */
     public PanelShowEnterpriseLegalDetails() {
@@ -60,7 +63,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
     }
 
     private void setDefaultListenerDateChooser() {
-         ((JTextField) dcDateEstablishment.getDateEditor().getUiComponent()).addCaretListener(new CaretListener() {
+        ((JTextField) dcDateEstablishment.getDateEditor().getUiComponent()).addCaretListener(new CaretListener() {
 
             @Override
             public void caretUpdate(CaretEvent e) {
@@ -102,7 +105,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
                 }
             }
         });
-        
+
     }
 
     private class CTR_CLICK extends MouseAdapter {
@@ -266,6 +269,12 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
         lbEnterpriseType.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbEnterpriseType.text")); // NOI18N
 
+        cbResponsibleLegal.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbResponsibleLegalItemStateChanged(evt);
+            }
+        });
+
         txtBusinessResgitrationNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtBusinessResgitrationNumber.text")); // NOI18N
 
         lbTaxCodeNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbTaxCodeNumber.text")); // NOI18N
@@ -373,6 +382,20 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
                 .addComponent(lbMessenger))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void checkComboBoxEnterpriseType() {
+        if (!(cbEnterpriseType.getSelectedItem() instanceof EnterpriseType)) {
+            lbEnterpriseType.setForeground(Color.red);
+            idEnterpriseTypeChoise = 0;
+        } else {
+            lbEnterpriseType.setForeground(Color.black);
+            idEnterpriseTypeChoise = ((EnterpriseType) cbEnterpriseType.getSelectedItem()).getId();
+        }
+    }
+private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbResponsibleLegalItemStateChanged
+// TODO add your handling code here:
+}//GEN-LAST:event_cbResponsibleLegalItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbEnterpriseType;
     private javax.swing.JComboBox cbResponsibleLegal;
@@ -476,8 +499,8 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         provider.getDataViewCurrent().setDateRegistration(dcDateRegistration.getDate());
         provider.getDataViewCurrent().setBusinessRegistrationTime(txtBusinessRegistrationTime.getText());
         try {
-            EnterpriseLegal enterpriseLegal = (EnterpriseLegal) cbEnterpriseType.getSelectedItem();
-            provider.getDataViewCurrent().setIdEnterpriseType(enterpriseLegal.getId());
+            EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getSelectedItem();
+            provider.getDataViewCurrent().setIdEnterpriseType(enterpriseType.getId());
         } catch (Exception e) {
             provider.getDataViewCurrent().setIdEnterpriseType(0);
         }
@@ -519,8 +542,7 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public void refreshData() { //hien thi len txt
-        provider.refreshData();
-     //   JOptionPane.showMessageDialog(null, "OK");
+        provider.refreshData();        
         txtEnterpriseName.setText(provider.getEnterpriseName()); // lay ten da co hien thi len 
         txtBusinessRegistrationTime.setText(provider.getDataViewCurrent().getBusinessRegistrationTime());
         txtBusinessResgitrationNumber.setText(provider.getDataViewCurrent().getBusinessResgitrationNumber());
@@ -532,10 +554,10 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
         txtTaxCodeNumber.setText(provider.getDataViewCurrent().getTaxCodeNumber());
         dcDateEstablishment.setDate(provider.getDataViewCurrent().getDateEstablishment());
         dcDateRegistration.setDate(provider.getDataViewCurrent().getDateRegistration());
-        loadComboBox();
+        loadComboBox();       
         for (int i = 0; i < cbEnterpriseType.getItemCount(); i++) {
             try {
-                EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getSelectedItem();
+                EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getItemAt(i);                
                 if (enterpriseType.getId() == provider.getDataViewCurrent().getIdEnterpriseType()) {
                     cbEnterpriseType.setSelectedIndex(i);
                     break;
@@ -563,10 +585,10 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public long editData() { // chinh sua
-         if (!getData()) {
+        if (!getData()) {
             return ID_FAILD;
         } else {
-            long id = provider.editData();
+            long id = provider.editData();            
             if (id < 0) {
                 return ID_FAILD;
             } else {
@@ -578,14 +600,14 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
     @Override
     public long removeData() {
-       long id = provider.getDataViewCurrent().getId();
-         if (provider.removeData() < 0) {
+        long id = provider.getDataViewCurrent().getId();
+        if (provider.removeData() < 0) {
             return ID_FAILD;
         } else {
             lbMessenger.setVisible(false);
             return id;
         }
-               
+
     }
 
     @Override
@@ -615,7 +637,10 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
     }
 
     private void loadComboBox() {
-        cbEnterpriseType.setModel(new DefaultComboBoxModel(provider.getEnterpriseTypes().toArray()));
-        cbResponsibleLegal.setModel(new DefaultComboBoxModel(provider.getPersons().toArray()));
+        List< EnterpriseType> enterpriseTypes =provider.getEnterpriseTypes();
+        cbEnterpriseType.setModel(new DefaultComboBoxModel(enterpriseTypes.toArray()));
+        
+        List<Person> persons =provider.getPersons();
+        cbResponsibleLegal.setModel(new DefaultComboBoxModel(persons.toArray()));
     }
 }

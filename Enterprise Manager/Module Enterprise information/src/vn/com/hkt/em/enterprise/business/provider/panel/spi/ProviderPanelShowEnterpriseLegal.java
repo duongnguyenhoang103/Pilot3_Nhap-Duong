@@ -107,13 +107,13 @@ public class ProviderPanelShowEnterpriseLegal implements IProviderPanelShowEnter
     @Override
     public void setEnterprise(Enterprise enterprise) {
         this.enterprise = enterprise;
-        List<EnterpriseLegal> ls = enterpriseLegalDAO.select(EnterpriseLegal.FIELD_ID_ENTERPRISE, String.valueOf(enterprise.getId()));
+        List<EnterpriseLegal> ls = enterpriseLegalDAO.select(EnterpriseLegal.FIELD_ID_ENTERPRISE, String.valueOf(enterprise.getId()));        
         if (ls.isEmpty()) {
             enterpriseLegal = new EnterpriseLegal();
             enterpriseLegal.setIdEnterprise(enterprise.getId());
         } else {
             enterpriseLegal = ls.get(0);
-        }
+        }        
     }
 
     @Override

@@ -10,9 +10,9 @@
  */
 package vn.com.hkt.em.common.gui.dialog.spi;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import vn.com.hkt.em.common.gui.panel.controlshow.spi.PanelControlShowInformation;
+import vn.com.hkt.em.common.gui.panel.show.api.IPanelShowInformation;
 import vn.com.hkt.em.common.gui.panel.show.api.IPanelShowInformationOverview;
 
 /**
@@ -25,7 +25,7 @@ import vn.com.hkt.em.common.gui.panel.show.api.IPanelShowInformationOverview;
 public class DialogInformation extends javax.swing.JDialog {
 
     private IPanelShowInformationOverview panelShowInformationOverview;
-
+ private IPanelShowInformation panelShowInformation;
     /**
      * Tạo dialog hiển thị thông tin mở rộng
      * @param panelShowInformationOverview : IPanelShowInformationOverview
@@ -35,7 +35,9 @@ public class DialogInformation extends javax.swing.JDialog {
         initComponents();
         setModal(true);
         this.setLocationRelativeTo(null);
-        this.panelShowInformationOverview = panelShowInformationOverview;
+//        this.panelShowInformationOverview = panelShowInformationOverview;
+        this.panelShowInformation = panelShowInformation;  
+        jScrollPane1.setViewportView((JPanel)panelShowInformation);
     }
 
     /** This method is called from within the constructor to
@@ -77,7 +79,9 @@ public class DialogInformation extends javax.swing.JDialog {
      * Đóng dialog và trả lại giao diện cha trên dialog cho giao diện gọi dialog    
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        panelShowInformationOverview.reloadPanelShowInformation();
+//        panelShowInformationOverview.reloadPanelShowInformation();
+         if(panelShowInformation instanceof IPanelShowInformationOverview)
+            ((IPanelShowInformationOverview)panelShowInformation).reloadPanelShowInformation();
     }//GEN-LAST:event_formWindowClosing
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

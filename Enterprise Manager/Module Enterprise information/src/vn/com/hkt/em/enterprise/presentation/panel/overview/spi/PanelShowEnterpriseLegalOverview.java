@@ -10,12 +10,16 @@
  */
 package vn.com.hkt.em.enterprise.presentation.panel.overview.spi;
 
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import org.openide.util.lookup.ServiceProvider;
-import sun.security.pkcs11.P11TlsKeyMaterialGenerator;
 import vn.com.hkt.em.basic.data.entities.Enterprise;
 import vn.com.hkt.em.basic.presentation.panel.show.api.IPanelShowEnterpriseBaisc;
 import vn.com.hkt.em.common.gui.controlshow.api.IControlShowInformation;
+import vn.com.hkt.em.common.gui.dialog.spi.DialogInformation;
+import vn.com.hkt.em.common.gui.panel.controlshow.spi.PanelControlShowInformation;
+import vn.com.hkt.em.common.gui.panel.show.api.IPanelShowInformation;
+import vn.com.hkt.em.enterprise.presentation.controlshow.api.IControlShowEnterpriseLegal;
+import vn.com.hkt.em.enterprise.presentation.controlshow.spi.ControlShowEnterpriseLegal;
 import vn.com.hkt.em.enterprise.presentation.panel.api.IPanelShowEnterpriseLegal;
 import vn.com.hkt.em.enterprise.presentation.panel.overview.api.IPanelShowEnterpriseLegalOverview;
 import vn.com.hkt.em.enterprise.presentation.panel.spi.PanelShowEnterpriseLegalDetails;
@@ -28,29 +32,33 @@ import vn.com.hkt.em.enterprise.presentation.panel.spi.PanelShowEnterpriseLegalD
 public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel implements IPanelShowEnterpriseBaisc, IPanelShowEnterpriseLegalOverview {
 
     private IPanelShowEnterpriseLegal panelShowEnterpriseLegal;// hien thi len chinh no
-     // private IControlShowEnterpriseLegal controlShowEnterpriseLegal; // hien thi khi co gd cha
+    
+    private IControlShowEnterpriseLegal controlShowEnterpriseLegal; // hien thi khi co gd cha
     private final long LEVEL_ENTERPRISE_BAISC = 2;
-    private PanelShowEnterpriseLegalDetails panelShowEnterpriseLegalDetails =new PanelShowEnterpriseLegalDetails();
+    private PanelShowEnterpriseLegalDetails panelDetails = new PanelShowEnterpriseLegalDetails();
 
     /** Creates new form PanelShowEnterpriseLegalOverview */
     public PanelShowEnterpriseLegalOverview() {
         initComponents();
         loadExtention();
-       
+
     }
- private void loadExtention() {
-        panelShowEnterpriseLegal = new PanelShowEnterpriseLegalDetails();
-        scrollPane.setViewportView((JPanel)panelShowEnterpriseLegal); // hien thi len chinh no
-//        controlShowEnterpriseLegal.loadPanelShow();
-//        controlShowEnterpriseLegal.setParent(panelShowEnterpriseLegalDetails);
-//        if (controlShowEnterpriseLegal.getListPanelShow().size() <= 1) {
-//            btnInformationOpen.setEnabled(false);
-//        } else {
-//            btnInformationOpen.setEnabled(true);
-//        }
-//        reloadPanelShowInformation();
+
+    private void loadExtention() {
+//        panelShowEnterpriseLegal = new PanelShowEnterpriseLegalDetails();
+//        scrollPane.setViewportView((JPanel) panelShowEnterpriseLegal); // hien thi len chinh no
+        controlShowEnterpriseLegal = new ControlShowEnterpriseLegal();
+        controlShowEnterpriseLegal.loadPanelShow();
+        controlShowEnterpriseLegal.setParent(panelDetails);
+        if (controlShowEnterpriseLegal.getListPanelShow().size() <= 1) {
+            btnInformationOpen.setEnabled(false);
+        } else {
+            btnInformationOpen.setEnabled(true);
+        }
+        reloadPanelShowInformation();
         btnInformationOpen.setEnabled(true);
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -116,9 +124,20 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnInformationOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformationOpenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnInformationOpenActionPerformed
+        openDialog();
+//        DialogInformation dialogInformation = new DialogInformation(this);
+//        dialogInformation.setVisible(true); 
 
+    }//GEN-LAST:event_btnInformationOpenActionPerformed
+    private void openDialog() {
+        DialogInformation dialogInformation = new DialogInformation(this);
+        PanelControlShowInformation panelControlShowInformation = new PanelControlShowInformation(controlShowEnterpriseLegal);
+//        PanelControlShowInformation panelControlShowInformation = new PanelControlShowInformation();
+//        panelControlShowInformation.setControlShow(controlShowEnterpriseLegal);
+        if (dialogInformation != null) {
+            dialogInformation.setPanelControlshowInformation(panelControlShowInformation);
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnInformationOpen;
     private javax.swing.JPanel jPanel2;
@@ -127,74 +146,121 @@ public class PanelShowEnterpriseLegalOverview extends javax.swing.JPanel impleme
 
     @Override
     public long getLevelPanelShowEnterpriseBasic() {
-      return LEVEL_ENTERPRISE_BAISC;
+        return LEVEL_ENTERPRISE_BAISC;
     }
 
     // thuc hien khi co form con load laj cha chinh no
     @Override
     public void setEnterprise(Enterprise enterprise) {
-        panelShowEnterpriseLegal.setEnterprise(enterprise);
+//        panelShowEnterpriseLegal.setEnterprise(enterprise);
+        panelDetails.setEnterprise(enterprise);
+        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowEnterpriseLegal) controlShowEnterpriseLegal.getListPanelShow().get(i)).setEnterpriseLegal(panelDetails.getEnterpriseLegal());
+        }
     }
 
     @Override
     public String getDescriptionPanel() {
-       return "thông tin pháp lý";    
+        return panelDetails.getDescriptionPanel();
     }
 
     @Override
     public void resetData() {
-        panelShowEnterpriseLegal.resetData();
+        //panelShowEnterpriseLegal.resetData();
+        for (int i = 0; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).resetData();
+        }
     }
 
     @Override
     public long addData(long idParent) {
-      return panelShowEnterpriseLegal.addData(idParent);
+        //   return panelShowEnterpriseLegal.addData(idParent);
+        long id = ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(0)).addData(idParent);
+        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).addData(id);
+        }
+        return id;
     }
 
     @Override
     public void refreshData() {
-        panelShowEnterpriseLegal.refreshData();
-    }   
+//        panelShowEnterpriseLegal.refreshData();
+        for (int i = 0; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).refreshData();
+        }
+    }
 
     @Override
     public void canEditData() {
-       panelShowEnterpriseLegal.canEditData();
+        //  panelShowEnterpriseLegal.canEditData();
+        for (int i = 0; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).canEditData();
+        }
     }
 
     @Override
     public long editData() {
-     return panelShowEnterpriseLegalDetails.editData();       
+        //   return panelDetails.editData();
+        long id = ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(0)).editData();
+        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            if (((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).editData() == ID_FAILD) {
+                return ID_FAILD;
+            }
+        }
+        return id;
     }
 
     @Override
     public long removeData() {
-        return panelShowEnterpriseLegal.removeData();
+        //return panelShowEnterpriseLegal.removeData();
+        long id = ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(0)).removeData();
+        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            if (((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).removeData() == ID_FAILD) {
+                return ID_FAILD;
+            }
+        }
+        return id;
+
     }
 
     @Override
     public int getFunction() {
-       return panelShowEnterpriseLegalDetails.getFunction();
+        return panelDetails.getFunction();
     }
 
     @Override
     public boolean checkData() {
-        return panelShowEnterpriseLegal.checkData();
+        //  return panelShowEnterpriseLegal.checkData();
+        boolean result = true;
+        for (int i = 1; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            if (!((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).checkData()) {
+                JOptionPane.showMessageDialog(null, "Dữ liệu trong giao diện mở rộng lỗi:"
+                        + ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).getDescriptionPanel());
+                result = false;
+            }
+        }
+        return panelDetails.checkData() && result;
     }
 
     @Override
     public void loadDefault() {
-        panelShowEnterpriseLegal.loadDefault();
+        //  panelShowEnterpriseLegal.loadDefault();
+        for (int i = 0; i < controlShowEnterpriseLegal.getListPanelShow().size(); i++) {
+            ((IPanelShowInformation) controlShowEnterpriseLegal.getListPanelShow().get(i)).loadDefault();
+        }
     }
 
     @Override
     public void reloadPanelShowInformation() {
-        
+        panelDetails =
+                (PanelShowEnterpriseLegalDetails) controlShowEnterpriseLegal.getListPanelShow().get(0);
+        scrollPane.setViewportView(panelDetails);
     }
 
     @Override
     public void setControlShowInformationOverview(IControlShowInformation controlShowInformation) {
-//       if (controlShowInformation instanceof IControlShowEnterpriseLegal) {
-//            controlShowEnterpriseLegal = (IControlShowEnterpriseLegal) controlShowInformation;
-//        }
+        if (controlShowInformation instanceof IControlShowEnterpriseLegal) {
+            controlShowEnterpriseLegal = (IControlShowEnterpriseLegal) controlShowInformation;
+        }
     }
 }
