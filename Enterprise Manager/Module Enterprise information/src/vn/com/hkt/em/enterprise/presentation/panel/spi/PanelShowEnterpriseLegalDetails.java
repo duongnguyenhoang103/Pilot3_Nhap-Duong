@@ -269,12 +269,6 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
 
         lbEnterpriseType.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbEnterpriseType.text")); // NOI18N
 
-        cbResponsibleLegal.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbResponsibleLegalItemStateChanged(evt);
-            }
-        });
-
         txtBusinessResgitrationNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.txtBusinessResgitrationNumber.text")); // NOI18N
 
         lbTaxCodeNumber.setText(org.openide.util.NbBundle.getMessage(PanelShowEnterpriseLegalDetails.class, "PanelShowEnterpriseLegalDetails.lbTaxCodeNumber.text")); // NOI18N
@@ -392,10 +386,6 @@ public class PanelShowEnterpriseLegalDetails extends javax.swing.JPanel implemen
             idEnterpriseTypeChoise = ((EnterpriseType) cbEnterpriseType.getSelectedItem()).getId();
         }
     }
-private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbResponsibleLegalItemStateChanged
-// TODO add your handling code here:
-}//GEN-LAST:event_cbResponsibleLegalItemStateChanged
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbEnterpriseType;
     private javax.swing.JComboBox cbResponsibleLegal;
@@ -542,7 +532,7 @@ private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {/
 
     @Override
     public void refreshData() { //hien thi len txt
-        provider.refreshData();        
+        provider.refreshData();
         txtEnterpriseName.setText(provider.getEnterpriseName()); // lay ten da co hien thi len 
         txtBusinessRegistrationTime.setText(provider.getDataViewCurrent().getBusinessRegistrationTime());
         txtBusinessResgitrationNumber.setText(provider.getDataViewCurrent().getBusinessResgitrationNumber());
@@ -554,10 +544,10 @@ private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {/
         txtTaxCodeNumber.setText(provider.getDataViewCurrent().getTaxCodeNumber());
         dcDateEstablishment.setDate(provider.getDataViewCurrent().getDateEstablishment());
         dcDateRegistration.setDate(provider.getDataViewCurrent().getDateRegistration());
-        loadComboBox();       
+        loadComboBox();
         for (int i = 0; i < cbEnterpriseType.getItemCount(); i++) {
             try {
-                EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getItemAt(i);                
+                EnterpriseType enterpriseType = (EnterpriseType) cbEnterpriseType.getItemAt(i);
                 if (enterpriseType.getId() == provider.getDataViewCurrent().getIdEnterpriseType()) {
                     cbEnterpriseType.setSelectedIndex(i);
                     break;
@@ -567,7 +557,7 @@ private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {/
         }
         for (int i = 0; i < cbResponsibleLegal.getItemCount(); i++) {
             try {
-                Person person = (Person) cbResponsibleLegal.getSelectedItem();
+                Person person = (Person) cbResponsibleLegal.getItemAt(i);
                 if (person.getId() == provider.getDataViewCurrent().getIdPersonResponsibleLegal()) {
                     cbResponsibleLegal.setSelectedIndex(i);
                     break;
@@ -588,7 +578,7 @@ private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {/
         if (!getData()) {
             return ID_FAILD;
         } else {
-            long id = provider.editData();            
+            long id = provider.editData();
             if (id < 0) {
                 return ID_FAILD;
             } else {
@@ -637,10 +627,10 @@ private void cbResponsibleLegalItemStateChanged(java.awt.event.ItemEvent evt) {/
     }
 
     private void loadComboBox() {
-        List< EnterpriseType> enterpriseTypes =provider.getEnterpriseTypes();
+        List<EnterpriseType> enterpriseTypes = provider.getEnterpriseTypes();
         cbEnterpriseType.setModel(new DefaultComboBoxModel(enterpriseTypes.toArray()));
-        
-        List<Person> persons =provider.getPersons();
+
+        List<Person> persons = provider.getPersons();
         cbResponsibleLegal.setModel(new DefaultComboBoxModel(persons.toArray()));
     }
 }
